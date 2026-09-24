@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: com.uday.webhook
+testFramework: junit
+sourceLanguage: java
+buildTool: maven
+features: [app-name, data, data-jdbc, http-client-test, java, java-application, jdbc-hikari, jul-to-slf4j, junit, liquibase, logback, maven, maven-enforcer-plugin, micronaut-aot, micronaut-http-validation, micronaut-processing-compiler-args, netty-server, postgres, properties, readme, serialization-jackson, shade, static-resources, test-resources, validation]
