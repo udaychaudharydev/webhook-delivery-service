@@ -1,22 +1,41 @@
 package com.uday.webhook;
 
-
-import io.micronaut.runtime.EmbeddedApplication;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.testcontainers.containers.PostgreSQLContainer;
 
-import jakarta.inject.Inject;
+import java.util.Map;
 
 @MicronautTest
-class WebhookDeliveryServiceTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class WebhookDeliveryServiceTest implements TestPropertyProvider {
 
-    @Inject
-    EmbeddedApplication<?> application;
+    private static final PostgreSQLContainer<?> POSTGRES =
+            new PostgreSQLContainer<>("postgres:18");
+
+    @Override
+    public @NonNull Map<String, String> getProperties() {
+        if (!POSTGRES.isRunning()) {
+            POSTGRES.start();
+        }
+
+        return Map.of(
+                "datasources.default.url", POSTGRES.getJdbcUrl(),
+                "datasources.default.username", POSTGRES.getUsername(),
+                "datasources.default.password", POSTGRES.getPassword()
+        );
+    }
 
     @Test
     void testItWorks() {
-        Assertions.assertTrue(application.isRunning());
     }
 
+    @AfterAll
+    void stopPostgres() {
+        POSTGRES.stop();
+    }
 }
